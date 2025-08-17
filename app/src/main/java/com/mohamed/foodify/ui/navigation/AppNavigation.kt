@@ -25,7 +25,6 @@ object Route{
     const val HOME_SCREEN="home_screen"
     const val PRODUCTS_SCREEN="products"
     const val CATEGORY_ID="categoryId"
-    const val PRODUCT_DETAILS="Product_Details"
 }
 @Composable
 fun AppNavigation(modifier: Modifier) {
