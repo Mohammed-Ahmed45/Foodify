@@ -10,8 +10,10 @@ import androidx.navigation.navArgument
 import com.mohamed.foodify.ui.screens.auth.AuthScreen
 import com.mohamed.foodify.ui.screens.auth.signin.SignInScreen
 import com.mohamed.foodify.ui.screens.auth.signup.SignUpScreen
+import com.mohamed.foodify.ui.screens.cart.CartScreen
 import com.mohamed.foodify.ui.screens.home.HomeScreen
 import com.mohamed.foodify.ui.screens.main.MainScreen
+import com.mohamed.foodify.ui.screens.products.ProductDetails
 import com.mohamed.foodify.ui.screens.products.ProductsScreen
 import com.mohamed.foodify.ui.screens.splash.SplashScreen
 
@@ -25,6 +27,9 @@ object Route{
     const val HOME_SCREEN="home_screen"
     const val PRODUCTS_SCREEN="products"
     const val CATEGORY_ID="categoryId"
+    const val PRODUCT_DETAILS="Product_Details"
+    const val PRODUCT_ID="productId"
+    const val CART_SCREEN="cart_screen"
 }
 @Composable
 fun AppNavigation(modifier: Modifier) {
@@ -37,6 +42,7 @@ fun AppNavigation(modifier: Modifier) {
         composable(Route.SIGN_IN) { SignInScreen(navController=navController) }
         composable(Route.AUTH_SCREEN) { AuthScreen(navController=navController) }
         composable(Route.MAIN_SCREEN) { MainScreen(navController=navController) }
+        composable(Route.CART_SCREEN) { CartScreen(navController=navController) }
         composable(
             route ="${Route.PRODUCTS_SCREEN}/{${Route.CATEGORY_ID}}",
             arguments =listOf(navArgument(name = Route.CATEGORY_ID){ type= NavType.StringType })
@@ -47,6 +53,21 @@ fun AppNavigation(modifier: Modifier) {
                 productId = productId
             )
             }
+        composable(
+            route = "${Route.PRODUCT_DETAILS}/{${Route.PRODUCT_ID}}"
+            ,
+            arguments = listOf(
+                navArgument(name =Route.PRODUCT_ID){
+                    NavType.StringType
+                }
+            )
+        ) {backStack->
+            val productId=backStack.arguments?.getString(Route.PRODUCT_ID)
+            ProductDetails(
+                productId = productId!!,
+                navController = navController
+            )
+        }
 
 
     }

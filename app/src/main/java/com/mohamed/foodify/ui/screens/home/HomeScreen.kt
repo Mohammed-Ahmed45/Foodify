@@ -1,11 +1,16 @@
 package com.mohamed.foodify.ui.screens.home
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -18,6 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
@@ -26,25 +32,24 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.firestore
 import com.mohamed.foodify.ui.screens.categories.CategoriesContent
+import com.mohamed.foodify.ui.utills.ProductCard
 import com.mohamed.foodify.ui.viewmodel.AuthViewModel
+import com.mohamed.foodify.ui.viewmodel.ProductsViewModel
 
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    navController: NavController? = null,
-//    authViewModel: AuthViewModel = viewModel()
+    navController: NavController,
+    productsViewModel: ProductsViewModel = hiltViewModel(),
+    authViewModel: AuthViewModel = hiltViewModel()
 ) {
-    var name by remember{mutableStateOf("")}
     LaunchedEffect(Unit) {
-        Firebase.firestore.collection("users")
-            .document(FirebaseAuth.getInstance().currentUser?.uid.toString())
-            .get().addOnSuccessListener {task->
-                name=task.get("name").toString()
-            }
-            .addOnFailureListener {
-                name=""
-            }
+        authViewModel.loadCurrentUser()
 
+    }
+
+    LaunchedEffect(Unit) {
+        productsViewModel.getPopularMeals()
     }
     Column(
         modifier = modifier.padding(12.dp)
@@ -54,7 +59,7 @@ fun HomeScreen(
             fontSize = 30.sp,
             fontWeight = FontWeight.Bold
         )
-        Text(name,
+        Text(authViewModel.currentUser?.name?:"",
             fontSize = 30.sp,
             fontWeight = FontWeight.Bold)
         Text(
@@ -63,12 +68,32 @@ fun HomeScreen(
             fontWeight = FontWeight.Light
         )
 
-        CategoriesContent()
+        CategoriesContent(
+            navController=navController
+        )
         Text(
             "Popular Meals",
             fontSize = 25.sp,
             fontWeight = FontWeight.Bold
         )
+        Spacer(modifier = Modifier.height(12.dp))
+        LazyHorizontalGrid(
+            rows = GridCells.Fixed(1),
+            modifier = modifier.height(340.dp)
+                .fillMaxWidth()
+                .padding(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            userScrollEnabled = true,
+        ) {
+            items(productsViewModel.popularMealsList){popularMealsItems->
+                ProductCard(
+                    navController = navController,
+                    products = popularMealsItems
+                )
+
+            }
+        }
     }
 
 

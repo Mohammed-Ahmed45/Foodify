@@ -60,6 +60,7 @@ dependencies {
     implementation(libs.googleid)
     implementation(project(":data"))
     implementation(project(":domain"))
+    implementation(libs.androidx.foundation.layout)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
