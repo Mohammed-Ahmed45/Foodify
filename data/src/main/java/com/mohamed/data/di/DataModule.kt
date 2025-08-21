@@ -1,9 +1,13 @@
 package com.mohamed.data.di
 
+import com.mohamed.data.repo.auth.AuthRepoImpl
+import com.mohamed.data.repo.cart.CartRepoImp
 import com.mohamed.data.repo.catrgories.CategoryRepoImp
 import com.mohamed.data.repo.products.PopularMealsRepoImp
 import com.mohamed.data.repo.products.ProductDetailsRepoImp
 import com.mohamed.data.repo.products.ProductRepoImp
+import com.mohamed.domain.repositories.auth.AuthRepo
+import com.mohamed.domain.repositories.cart.CartRepo
 import com.mohamed.domain.repositories.category.CategoriesRepo
 import com.mohamed.domain.repositories.product.PopularMealsRepo
 import com.mohamed.domain.repositories.product.ProductDetailsRepo
@@ -33,4 +37,11 @@ abstract class DataModule{
     @Binds
     @Singleton
     abstract fun bindProductDetailsRepo(productDetailsRepoImp: ProductDetailsRepoImp): ProductDetailsRepo
+    @Binds
+    @Singleton
+    abstract fun bindAddToCartRepo(cartRepoImp: CartRepoImp): CartRepo
+
+    @Binds
+    @Singleton
+    abstract fun bindAuthRepo(authRepoImp: AuthRepoImpl): AuthRepo
 }
