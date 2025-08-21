@@ -1,5 +1,12 @@
 package com.mohamed.foodify.ui.navigation
 
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.EaseIn
+import androidx.compose.animation.core.EaseOut
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavType
@@ -7,6 +14,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.mohamed.adminFoodify.screen.main.AdminMainScreen
 import com.mohamed.foodify.ui.screens.auth.AuthScreen
 import com.mohamed.foodify.ui.screens.auth.signin.SignInScreen
 import com.mohamed.foodify.ui.screens.auth.signup.SignUpScreen
@@ -30,6 +38,7 @@ object Route{
     const val PRODUCT_DETAILS="Product_Details"
     const val PRODUCT_ID="productId"
     const val CART_SCREEN="cart_screen"
+    const val ADMIN_SCREEN="admin_screen"
 }
 @Composable
 fun AppNavigation(modifier: Modifier) {
@@ -43,6 +52,7 @@ fun AppNavigation(modifier: Modifier) {
         composable(Route.AUTH_SCREEN) { AuthScreen(navController=navController) }
         composable(Route.MAIN_SCREEN) { MainScreen(navController=navController) }
         composable(Route.CART_SCREEN) { CartScreen(navController=navController) }
+        composable(Route.ADMIN_SCREEN) { AdminMainScreen(navController=navController) }
         composable(
             route ="${Route.PRODUCTS_SCREEN}/{${Route.CATEGORY_ID}}",
             arguments =listOf(navArgument(name = Route.CATEGORY_ID){ type= NavType.StringType })
@@ -60,7 +70,27 @@ fun AppNavigation(modifier: Modifier) {
                 navArgument(name =Route.PRODUCT_ID){
                     NavType.StringType
                 }
-            )
+            ),
+            enterTransition = {
+                fadeIn(
+                    animationSpec = tween(
+                        700, easing = LinearEasing
+                    )
+                ) + slideIntoContainer(
+                    animationSpec = tween(700, easing = EaseIn),
+                    towards = AnimatedContentTransitionScope.SlideDirection.Start
+                )
+            },
+            exitTransition = {
+                fadeOut(
+                    animationSpec = tween(
+                        700, easing = LinearEasing
+                    )
+                ) + slideOutOfContainer(
+                    animationSpec = tween(700, easing = EaseOut),
+                    towards = AnimatedContentTransitionScope.SlideDirection.End
+                )
+            }
         ) {backStack->
             val productId=backStack.arguments?.getString(Route.PRODUCT_ID)
             ProductDetails(
