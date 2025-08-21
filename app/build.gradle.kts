@@ -60,6 +60,7 @@ dependencies {
     implementation(libs.googleid)
     implementation(project(":data"))
     implementation(project(":domain"))
+    implementation(libs.androidx.foundation.layout)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -67,6 +68,12 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    //lottie animation
+
+    implementation(libs.lottie.compose)
+
+    implementation("androidx.compose.material3:material3:1.1.2")
+    implementation("androidx.compose.material:material-icons-extended:1.5.4")
 //coil
     implementation(libs.coil.compose)
     implementation(libs.androidx.navigation.compose)
