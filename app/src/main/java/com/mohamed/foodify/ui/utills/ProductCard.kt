@@ -178,6 +178,7 @@ fun ProductCard(
                                     color = Colors.DarkOrange,
                                     shape = CircleShape
                                 )
+
                                 .clickable {
                                     cartViewModel.addToCart(products.id)
                                     cartViewModel.showAnimation = true
