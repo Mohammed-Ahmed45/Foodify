@@ -1,7 +1,6 @@
 package com.mohamed.foodify.ui.screens.products
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,8 +12,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -25,7 +24,6 @@ import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -37,7 +35,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -55,7 +53,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.mohamed.foodify.ui.theme.Colors
+import com.mohamed.foodify.ui.utills.LoadingAnimation
 import com.mohamed.foodify.ui.utills.LottieAnimationState
+import com.mohamed.foodify.ui.viewmodel.AuthViewModel
 import com.mohamed.foodify.ui.viewmodel.CartViewModel
 import com.mohamed.foodify.ui.viewmodel.ProductsViewModel
 
@@ -67,25 +67,34 @@ fun ProductDetails(
     productId: String = "",
     navController: NavController,
     cartViewModel: CartViewModel = hiltViewModel(),
+    authViewModel: AuthViewModel = hiltViewModel(),
 ) {
+    var selectedQuantity by remember { mutableLongStateOf(1L) }
+
+    val currentCartQuantity = authViewModel.currentUser?.cartItems?.get(productId) ?: 0L
+
     val productItems = productsViewModel.productDetailsList.firstOrNull()
     var isFavorite by remember { mutableStateOf(false) }
-    var quantity by remember { mutableIntStateOf(1) }
 
     LaunchedEffect(productId) {
         productsViewModel.getProductDetails(productId)
     }
 
+    LaunchedEffect(Unit) {
+        authViewModel.loadCurrentUser()
+    }
+
     if (productItems == null) {
-        // Loading state
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            CircularProgressIndicator()
+            LoadingAnimation()
         }
         return
     }
+
+    val pagerState = rememberPagerState(pageCount = { productItems.imagesUrl.size })
 
     Column(
         modifier = modifier
@@ -132,26 +141,24 @@ fun ProductDetails(
         ) {
             // Images Section
             if (productItems.imagesUrl.isNotEmpty()) {
-                LazyRow(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    val imagesUrl = productItems.imagesUrl
-                    items(imagesUrl) { imageUrl ->
-                        AsyncImage(
-                            model = imageUrl,
-                            contentDescription = "Product Image",
-                            modifier = Modifier
-                                .size(250.dp, 200.dp)
-                                .clip(RoundedCornerShape(12.dp)),
-                            contentScale = ContentScale.Crop,
-                            error = painterResource(id = android.R.drawable.ic_menu_gallery)
-                        )
-                    }
+                HorizontalPager(
+                    state = pagerState,
+                    modifier = Modifier.fillMaxSize()
+                ) { page ->
+                    AsyncImage(
+                        model = productItems.imagesUrl[page],
+                        contentDescription = "Product Image",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .size(250.dp, 280.dp)
+                            .clip(RoundedCornerShape(16.dp)),
+                        contentScale = ContentScale.Crop,
+                        error = painterResource(id = android.R.drawable.ic_menu_gallery)
+                    )
                 }
-
-                Spacer(modifier = Modifier.height(16.dp))
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
 
             // Product Title
             Text(
@@ -197,6 +204,25 @@ fun ProductDetails(
                 Spacer(modifier = Modifier.height(16.dp))
             }
 
+            // Current Cart Quantity
+            if (currentCartQuantity > 0) {
+                Surface(
+                    shape = RoundedCornerShape(8.dp),
+                    color = Colors.DarkOrange.copy(alpha = 0.1f),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp)
+                ) {
+                    Text(
+                        text = "  Current quantity in cart : $currentCartQuantity",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Colors.DarkOrange,
+                        fontWeight = FontWeight.Medium,
+                        modifier = Modifier.padding(12.dp)
+                    )
+                }
+            }
+
             // Description
             if (productItems.description.isNotEmpty()) {
                 Text(
@@ -225,7 +251,7 @@ fun ProductDetails(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
-                    text = "quantity:",
+                    text = "Quantity:",
                     style = MaterialTheme.typography.titleMedium.copy(
                         fontWeight = FontWeight.SemiBold
                     ),
@@ -244,7 +270,7 @@ fun ProductDetails(
                         .padding(4.dp)
                 ) {
                     IconButton(
-                        onClick = { if (quantity > 1) quantity-- },
+                        onClick = { if (selectedQuantity > 1) selectedQuantity-- },
                         modifier = Modifier.size(32.dp)
                     ) {
                         Text(
@@ -252,10 +278,11 @@ fun ProductDetails(
                             style = MaterialTheme.typography.titleMedium,
                             color = Colors.DarkOrange
                         )
+
                     }
 
                     Text(
-                        text = quantity.toString(),
+                        text = selectedQuantity.toString(),
                         style = MaterialTheme.typography.titleMedium.copy(
                             fontWeight = FontWeight.Bold
                         ),
@@ -263,7 +290,7 @@ fun ProductDetails(
                     )
 
                     IconButton(
-                        onClick = { quantity++ },
+                        onClick = { selectedQuantity++ },
                         modifier = Modifier.size(32.dp)
                     ) {
                         Text(
@@ -280,8 +307,9 @@ fun ProductDetails(
             // Add to Cart Button
             Button(
                 onClick = {
-                    cartViewModel.addToCart(productId)
+                    cartViewModel.addToCartWithQuantity(productId, selectedQuantity)
                     cartViewModel.showAnimation = true
+                    selectedQuantity = 1L
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -299,15 +327,13 @@ fun ProductDetails(
 
                 Spacer(modifier = Modifier.width(8.dp))
 
-
                 Text(
-                    text = "Add to Cart",
+                    text = "Add $selectedQuantity to Cart ",
                     style = MaterialTheme.typography.titleMedium.copy(
                         fontWeight = FontWeight.SemiBold
                     )
                 )
             }
-
         }
     }
 
@@ -317,12 +343,8 @@ fun ProductDetails(
                 .fillMaxSize()
                 .padding(16.dp),
             contentAlignment = Alignment.Center
-
         ) {
-
             LottieAnimationState()
-
         }
     }
-
 }
