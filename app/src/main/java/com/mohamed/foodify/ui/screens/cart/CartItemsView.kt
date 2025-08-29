@@ -1,62 +1,63 @@
 package com.mohamed.foodify.ui.screens.cart
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Text
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.getValue
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import com.mohamed.domain.model.products.Products
 import coil.request.ImageRequest
-import com.airbnb.lottie.compose.LottieCompositionSpec
-import com.airbnb.lottie.compose.rememberLottieComposition
+import com.mohamed.domain.model.products.Products
+import com.mohamed.foodify.ui.navigation.Route
+import com.mohamed.foodify.ui.theme.Colors
 import com.mohamed.foodify.ui.viewmodel.CartViewModel
-import kotlin.time.Duration.Companion.nanoseconds
 
 @Composable
 fun CartItemsView(
     modifier: Modifier = Modifier,
     product: Products,
     quantity: Long,
-    cartViewModel: CartViewModel = hiltViewModel()
-    ) {
+    navController: NavController,
+    cartViewModel: CartViewModel = hiltViewModel(),
+) {
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .height(120.dp)
-            .padding(vertical = 4.dp)
-            .clickable { },
+            .height(132.dp)
+            .padding(horizontal = 4.dp, vertical = 6.dp)
+            .clickable {
+                navController.navigate("${Route.PRODUCT_DETAILS}/${product.id}")
+            },
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         colors = CardDefaults.cardColors(
@@ -68,7 +69,6 @@ fun CartItemsView(
                 .fillMaxSize()
                 .padding(12.dp)
         ) {
-            // ✅ Product Image
             Box(
                 modifier = Modifier
                     .size(96.dp)
@@ -103,7 +103,6 @@ fun CartItemsView(
 
             Spacer(modifier = Modifier.width(12.dp))
 
-            // ✅ Product Details
             Column(
                 modifier = Modifier
                     .weight(1f)
@@ -138,17 +137,15 @@ fun CartItemsView(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Column {
-
                         Text(
-                            text = "${product.price} ج.م",
+                            text = "${product.price} EGP",
                             style = MaterialTheme.typography.titleSmall,
-                            color = MaterialTheme.colorScheme.primary,
+                            color = Colors.DarkOrange,
                             fontWeight = FontWeight.Bold
                         )
 
-
                         Text(
-                            text = "الكمية: $quantity",
+                            text = "quantity: $quantity",
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -165,22 +162,24 @@ fun CartItemsView(
                                 imageVector = Icons.Default.Add,
                                 contentDescription = "Add to Cart",
                                 modifier = Modifier.size(18.dp),
-                                tint = MaterialTheme.colorScheme.primary
+                                tint = Colors.DarkOrange
                             )
                         }
 
                         Spacer(modifier = Modifier.width(8.dp))
+
                         IconButton(
                             onClick = {
                                 cartViewModel.removeFromCart(product.id)
+                                cartViewModel.cartState = cartViewModel.cartState.toMutableMap()
+                                    .apply { remove(product.id) }
                             },
                             modifier = Modifier.size(32.dp)
                         ) {
-                            Icon(
-                                imageVector = Icons.Default.Delete,
-                                contentDescription = "Remove from Cart",
-                                modifier = Modifier.size(18.dp),
-                                tint = MaterialTheme.colorScheme.primary
+                            Text(
+                                text = "-",
+                                style = MaterialTheme.typography.titleMedium,
+                                color = Colors.DarkOrange
                             )
                         }
                     }
