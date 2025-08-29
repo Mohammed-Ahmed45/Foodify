@@ -21,6 +21,8 @@ import com.mohamed.foodify.ui.screens.auth.signup.SignUpScreen
 import com.mohamed.foodify.ui.screens.cart.CartScreen
 import com.mohamed.foodify.ui.screens.home.HomeScreen
 import com.mohamed.foodify.ui.screens.main.MainScreen
+import com.mohamed.foodify.ui.screens.order.orderTracking.OrderTrackingScreen
+import com.mohamed.foodify.ui.screens.order.placeOrder.OrderScreen
 import com.mohamed.foodify.ui.screens.products.ProductDetails
 import com.mohamed.foodify.ui.screens.products.ProductsScreen
 import com.mohamed.foodify.ui.screens.splash.SplashScreen
@@ -39,6 +41,8 @@ object Route{
     const val PRODUCT_ID="productId"
     const val CART_SCREEN="cart_screen"
     const val ADMIN_SCREEN="admin_screen"
+    const val ORDER_SCREEN = "order_screen"
+    const val ORDER_TRACKING_SCREEN = "order_tracking_screen"
 }
 @Composable
 fun AppNavigation(modifier: Modifier) {
@@ -53,6 +57,8 @@ fun AppNavigation(modifier: Modifier) {
         composable(Route.MAIN_SCREEN) { MainScreen(navController=navController) }
         composable(Route.CART_SCREEN) { CartScreen(navController=navController) }
         composable(Route.ADMIN_SCREEN) { AdminMainScreen(navController=navController) }
+        composable(Route.ORDER_SCREEN) { OrderScreen(navController = navController) }
+        composable(Route.ORDER_TRACKING_SCREEN) { OrderTrackingScreen(navController = navController) }
         composable(
             route ="${Route.PRODUCTS_SCREEN}/{${Route.CATEGORY_ID}}",
             arguments =listOf(navArgument(name = Route.CATEGORY_ID){ type= NavType.StringType })
