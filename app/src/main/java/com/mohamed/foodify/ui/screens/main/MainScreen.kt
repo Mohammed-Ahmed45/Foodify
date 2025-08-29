@@ -10,10 +10,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.icons.filled.Receipt
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -28,7 +27,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -36,8 +34,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.mohamed.foodify.ui.model.NavItemList
-import com.mohamed.foodify.ui.screens.cart.CartScreen
 import com.mohamed.foodify.ui.screens.home.HomeScreen
+import com.mohamed.foodify.ui.screens.order.orderTracking.OrderTrackingScreen
 import com.mohamed.foodify.ui.screens.profile.ProfileScreen
 import com.mohamed.foodify.ui.theme.Colors
 
@@ -49,7 +47,7 @@ fun MainScreen(
 
     val navItemList = listOf(
         NavItemList("Home", Icons.Default.Home),
-        NavItemList("Cart", Icons.Default.ShoppingCart),
+        NavItemList("Order", Icons.Default.Receipt),
         NavItemList("Profile", Icons.Default.Person)
     )
     var selectedIndex by remember { mutableIntStateOf(0) }
@@ -74,13 +72,14 @@ fun MainScreen(
                                     text = navItem.title,
                                     fontSize = 12.sp,
                                     fontWeight = FontWeight.Medium,
-                                    color = Colors.Red
+                                    color = Colors.DarkOrange
+
                                 )
                             }
                         },
                         colors = NavigationBarItemColors(
-                            selectedIconColor = Colors.Red,
-                            selectedTextColor = Colors.Red,
+                            selectedIconColor = Colors.DarkOrange,
+                            selectedTextColor = Colors.DarkOrange,
                             unselectedIconColor = Color.Black,
                             unselectedTextColor = Color.Black,
                             disabledIconColor = Color.Black,
@@ -110,7 +109,7 @@ fun ContentScreen(
     ){
         when(selectedIndex){
             0->HomeScreen(navController =navController)
-            1->CartScreen(navController =navController)
+            1 -> OrderTrackingScreen(navController = navController)
             2->ProfileScreen(navController =navController)
         }
     }

@@ -52,6 +52,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.firebase.firestore.ktx)
     implementation(libs.firebase.database)
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.auth)
@@ -74,13 +75,21 @@ dependencies {
 
     implementation("androidx.compose.material3:material3:1.1.2")
     implementation("androidx.compose.material:material-icons-extended:1.5.4")
-//coil
+    //coil
     implementation(libs.coil.compose)
     implementation(libs.androidx.navigation.compose)
     // Hilt
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
+
+    // Gemini
+    implementation(platform("com.google.firebase:firebase-bom:34.1.0"))
+
+    // Add the dependency for the Firebase AI Logic library
+    // When using the BoM, you don't specify versions in Firebase library dependencies
+    implementation("com.google.firebase:firebase-ai")
+
 }
 kapt {
     correctErrorTypes = true
