@@ -32,22 +32,25 @@ class OrdersViewModel @Inject constructor(
     var isLoading by mutableStateOf(false)
     val orderStatusList = mutableStateListOf<OrdersEntity>()
 
+//
+//    val totalOrdersCount: Int
+//        get() = orderStatusList.size
+//
+//    val orderedCount: Int
+//        get() = orderStatusList.count { it.status == "ORDERED" }
+//
+//    val inProgressCount: Int
+//        get() = orderStatusList.count { it.status == "IN_PROGRESS" }
+//
+//    val deliveredCount: Int
+//        get() = orderStatusList.count { it.status == "DELIVERED" }
+//
+//    val cancelledCount: Int
+//        get() = orderStatusList.count { it.status == "CANCELLED" }
 
-    val totalOrdersCount: Int
-        get() = orderStatusList.size
-
-    val orderedCount: Int
-        get() = orderStatusList.count { it.status == "ORDERED" }
-
-    val inProgressCount: Int
-        get() = orderStatusList.count { it.status == "IN_PROGRESS" }
-
-    val deliveredCount: Int
-        get() = orderStatusList.count { it.status == "DELIVERED" }
-
-    val cancelledCount: Int
-        get() = orderStatusList.count { it.status == "CANCELLED" }
-
+    init {
+        getUserOrder()
+    }
     fun sendUserOrdes() {
         if (isOrderSubmitting) return
 
@@ -64,6 +67,7 @@ class OrdersViewModel @Inject constructor(
                 ordersUseCase.userPlaceOrder(
                     id = UUID.randomUUID().toString(),
                     userId = userId,
+                    name = userDoc.get("name").toString(),
                     address = userDoc.get("address").toString(),
                     cartItems = cartItems,
                     date = Timestamp.now(),
@@ -82,20 +86,18 @@ class OrdersViewModel @Inject constructor(
         }
     }
 
-    fun getUserOrder() {
+    private fun getUserOrder() {
         viewModelScope.launch {
-            try {
-                isLoading = true
+
                 val userId = auth.currentUser?.uid.toString()
-                val response = ordersUseCase.getUsersOrders(userId)
-                orderStatusList.clear()
-                orderStatusList.addAll(response)
-                Log.e("TAG", "getUserOrder: $response")
-            } catch (e: Exception) {
-                handleError(e)
-            } finally {
-                isLoading = false
-            }
+            ordersUseCase.getUsersOrders(userId)
+                .collect { response ->
+                    orderStatusList.clear()
+                    orderStatusList.addAll(response)
+                    Log.e("TAG", "getUserOrder: $response")
+                }
+
+
         }
     }
 

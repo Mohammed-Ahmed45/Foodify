@@ -6,6 +6,7 @@ import com.mohamed.domain.model.orders.OrdersEntity
 data class OrdersDto(
     val id: String = "",
     val userId: String = "",
+    val name: String = "",
     val address: String = "",
     val date: Timestamp = Timestamp.now(),
     val status: String = "",
@@ -15,6 +16,7 @@ data class OrdersDto(
         return OrdersEntity(
             id = id,
             userId = userId,
+            name = name,
             address = address,
             date = date,
             status = status,
