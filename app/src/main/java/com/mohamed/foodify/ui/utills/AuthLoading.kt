@@ -23,14 +23,12 @@ fun AuthLoading(modifier: Modifier = Modifier) {
         LottieCompositionSpec.RawRes(R.raw.auth_loading)
     )
 
-    // Full screen overlay that appears on top of everything
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(Color.White), // Semi-transparent overlay
+            .background(Color.White),
         contentAlignment = Alignment.Center
     ) {
-        // Loading animation container
         Box(
             modifier = Modifier
                 .size(180.dp)
