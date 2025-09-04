@@ -2,19 +2,19 @@ package com.mohamed.domain.repositories.orders
 
 import com.google.firebase.Timestamp
 import com.mohamed.domain.model.orders.OrdersEntity
-import com.mohamed.domain.model.products.Products
-import java.util.Date
+import kotlinx.coroutines.flow.Flow
 
 interface OrdersRepo {
     suspend fun placeOrder(
         id: String,
         userId: String,
+        name: String,
         address: String,
         cartItems: Map<String, Long>,
         date: Timestamp,
         status: String,
     ): OrdersEntity
 
-    suspend fun getUserOrders(userId: String): List<OrdersEntity>
+    fun getUserOrders(userId: String): Flow<List<OrdersEntity>>
 
 }

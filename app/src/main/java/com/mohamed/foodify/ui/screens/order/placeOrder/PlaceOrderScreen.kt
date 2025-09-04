@@ -1,15 +1,30 @@
 package com.mohamed.foodify.ui.screens.order.placeOrder
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Receipt
 import androidx.compose.material.icons.filled.LocalShipping
+import androidx.compose.material.icons.filled.Receipt
 import androidx.compose.material.icons.outlined.ShoppingCart
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -17,8 +32,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import calculateOrderTotals
+import com.mohamed.foodify.ui.navigation.Route
 import com.mohamed.foodify.ui.theme.Colors
-import com.mohamed.foodify.ui.utills.OrderAnimation
 import com.mohamed.foodify.ui.viewmodel.AuthViewModel
 import com.mohamed.foodify.ui.viewmodel.CartViewModel
 import com.mohamed.foodify.ui.viewmodel.OrdersViewModel
@@ -78,31 +93,23 @@ fun OrderScreen(
         bottomBar = {
             if (!ordersViewModel.showAnimation) {
                 OrderBottomBar(
+
                     finalTotal = orderCalculations.finalTotal,
                     onConfirmOrder = {
                         if (orderCalculations.subTotal >= 1) {
                             ordersViewModel.sendUserOrdes()
-                            ordersViewModel.showAnimation = true
+                            navController.navigate(Route.SUCCESS_ORDER)
                         } else {
                             ordersViewModel.showAnimation = false
                         }
 
                     }
+
                 )
             }
         }
     ) { paddingValues ->
 
-        if (ordersViewModel.showAnimation == true) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Colors.Background),
-                contentAlignment = Alignment.Center
-            ) {
-                OrderAnimation()
-            }
-        } else {
             LazyColumn(
                 modifier = modifier
                     .fillMaxSize()
@@ -163,7 +170,7 @@ fun OrderScreen(
             }
         }
     }
-}
+
 
 
 

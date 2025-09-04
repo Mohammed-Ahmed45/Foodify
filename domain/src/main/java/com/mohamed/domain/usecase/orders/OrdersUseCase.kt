@@ -3,6 +3,7 @@ package com.mohamed.domain.usecase.orders
 import com.google.firebase.Timestamp
 import com.mohamed.domain.model.orders.OrdersEntity
 import com.mohamed.domain.repositories.orders.OrdersRepo
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class OrdersUseCase @Inject constructor(
@@ -11,15 +12,16 @@ class OrdersUseCase @Inject constructor(
     suspend fun userPlaceOrder(
         id: String,
         userId: String,
+        name: String,
         address: String,
         cartItems: Map<String, Long>,
         date: Timestamp,
         status: String,
     ): OrdersEntity {
-        return ordersRepo.placeOrder(id, userId, address, cartItems, date, status)
+        return ordersRepo.placeOrder(id, userId, name, address, cartItems, date, status)
     }
 
-    suspend fun getUsersOrders(userId: String): List<OrdersEntity> {
+    fun getUsersOrders(userId: String): Flow<List<OrdersEntity>> {
         return ordersRepo.getUserOrders(userId)
     }
 }
