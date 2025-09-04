@@ -13,17 +13,25 @@ class AuthRepoImpl @Inject constructor(
     private val firestore: FirebaseFirestore
 ) : AuthRepo {
 
-    override suspend fun signUp(name: String, email: String, password: String): User {
+
+    override suspend fun signUp(
+        name: String,
+        email: String,
+        phoneNumber: String,
+        address: String,
+        password: String,
+        isAdmin: Boolean,
+    ): User {
         val authResult = auth.createUserWithEmailAndPassword(email, password).await()
         val userId = authResult.user?.uid ?: throw Exception("User ID is null")
 
-        val dto = UserModelDto(userId, name, email)
+        val dto = UserModelDto(userId, name, email, phoneNumber, address, isAdmin)
         firestore.collection("users").document(userId).set(dto).await()
 
         return dto.toDomain()
     }
 
-    override suspend fun signIn(email: String, password: String): User {
+    override suspend fun signIn(email: String, password: String, isAdmin: Boolean): User {
         val authResult = auth.signInWithEmailAndPassword(email, password).await()
         val userId = authResult.user?.uid ?: throw Exception("User ID is null")
 

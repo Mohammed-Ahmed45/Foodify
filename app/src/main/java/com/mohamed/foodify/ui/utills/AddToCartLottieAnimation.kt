@@ -16,7 +16,7 @@ import kotlinx.coroutines.delay
 
 
 @Composable
-fun LottieAnimationState(
+fun AddToCartLottieAnimation(
     modifier: Modifier = Modifier,
     cartViewModel: CartViewModel = hiltViewModel(),
 ) {
@@ -25,9 +25,9 @@ fun LottieAnimationState(
     )
     LaunchedEffect(cartViewModel.showAnimation) {
         if (cartViewModel.showAnimation) {
-            delay(3000)
+            delay(2000)
             cartViewModel.showAnimation = false
-            cartViewModel.successMessage = false
+
         }
     }
 
