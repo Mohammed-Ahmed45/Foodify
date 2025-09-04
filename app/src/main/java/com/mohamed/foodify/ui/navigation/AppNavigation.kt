@@ -26,6 +26,7 @@ import com.mohamed.foodify.ui.screens.order.placeOrder.OrderScreen
 import com.mohamed.foodify.ui.screens.products.ProductDetails
 import com.mohamed.foodify.ui.screens.products.ProductsScreen
 import com.mohamed.foodify.ui.screens.splash.SplashScreen
+import com.mohamed.foodify.ui.utills.SuccessOrder
 
 
 object Route{
@@ -43,6 +44,7 @@ object Route{
     const val ADMIN_SCREEN="admin_screen"
     const val ORDER_SCREEN = "order_screen"
     const val ORDER_TRACKING_SCREEN = "order_tracking_screen"
+    const val SUCCESS_ORDER = "Success_Order"
 }
 @Composable
 fun AppNavigation(modifier: Modifier) {
@@ -59,6 +61,7 @@ fun AppNavigation(modifier: Modifier) {
         composable(Route.ADMIN_SCREEN) { AdminMainScreen(navController=navController) }
         composable(Route.ORDER_SCREEN) { OrderScreen(navController = navController) }
         composable(Route.ORDER_TRACKING_SCREEN) { OrderTrackingScreen(navController = navController) }
+        composable(Route.SUCCESS_ORDER) { SuccessOrder(navController = navController) }
         composable(
             route ="${Route.PRODUCTS_SCREEN}/{${Route.CATEGORY_ID}}",
             arguments =listOf(navArgument(name = Route.CATEGORY_ID){ type= NavType.StringType })

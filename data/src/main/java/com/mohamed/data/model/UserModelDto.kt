@@ -7,9 +7,13 @@ data class UserModelDto(
     val userId: String = "",
     val name: String = "",
     val email: String = "",
-    val cartItems: Map<String, Long>? = mapOf()
+    val phoneNumber: String = "",
+    val address: String = "",
+    @field:JvmField
+    val admin: Boolean = false,
+    val cartItems: Map<String, Long>? = mapOf(),
 ) {
-    fun toDomain() = User(userId, name, email,cartItems)
+    fun toDomain() = User(userId, name, email, phoneNumber, address, admin, cartItems)
 }
 
-fun User.toDto() = UserModelDto(userId, name, email,cartItems)
+fun User.toDto() = UserModelDto(userId, name, email, phoneNumber, address, isAdmin, cartItems)

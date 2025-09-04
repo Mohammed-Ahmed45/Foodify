@@ -7,11 +7,19 @@ import javax.inject.Inject
 class AuthUseCase @Inject constructor(
     private val repo: AuthRepo
 ) {
-    suspend  fun signUp(name: String, email: String, password: String): User {
-        return repo.signUp(name, email, password)
+    suspend fun signUp(
+        name: String,
+        email: String,
+        password: String,
+        phoneNumber: String,
+        address: String,
+        isAdmin: Boolean,
+    ): User {
+        return repo.signUp(name, email, phoneNumber, address, password, isAdmin)
     }
-    suspend  fun signIn(email: String, password: String): User {
-        return repo.signIn(email, password)
+
+    suspend fun signIn(email: String, password: String, isAdmin: Boolean): User {
+        return repo.signIn(email, password, isAdmin)
     }
 }
 
