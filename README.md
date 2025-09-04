@@ -6,11 +6,6 @@ Foodify is a **full-stack food ordering application** built from scratch, consis
 
 The app is built with modern Android development tools and follows clean architecture principles to ensure scalability and maintainability.
 
----
-
-# 💡 Preview
-
-📱 **Download App APK** : [Download APK](https://www.mediafire.com/file/xxxxxx/foodify.apk/file)
 
 ---
 ## 👤 User App
@@ -53,8 +48,6 @@ The app is built with modern Android development tools and follows clean archite
 
 
 ---
-
-# 🌟 Libraries and technologies used
 
 # 🌟 Libraries and technologies used
 
